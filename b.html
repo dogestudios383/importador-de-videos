@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>procure videos aqui!</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .video { margin-bottom: 20px; }
+    iframe { width: 100%; max-width: 560px; height: 315px; }
+  </style>
+</head>
+<body>
+
+  <h1>Buscar Vídeos no YouTube</h1>
+  <input type="text" id="search" placeholder="Digite um termo..." />
+  <button onclick="buscarVideos()">Buscar</button>
+
+  <div id="videos"></div>
+
+  <script>
+   const API_KEY = 'AIzaSyA88V2R_FJX4cpGmrtoHRm5nK2JUUdxfQk';
+
+    function buscarVideos() {
+      const termo = document.getElementById('search').value;
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=${encodeURIComponent(termo)}&key=${API_KEY}`;
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          const container = document.getElementById('videos');
+          container.innerHTML = '';
+
+          data.items.forEach(item => {
+            const videoId = item.id.videoId;
+            const title = item.snippet.title;
+            const html = `
+              <div class="video">
+                <h3>${title}</h3>
+                <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+              </div>
+            `;
+            container.innerHTML += html;
+          });
+        })
+        .catch(error => {
+          console.error('Erro ao buscar vídeos:', error);
+        });
+    }
+  </script>
+
+</body>
+</html>
